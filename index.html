@@ -66,6 +66,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 1rem;
     }
 
     .logo {
@@ -90,6 +91,12 @@
       font-size: 0.8rem;
       color: #1b1725;
       box-shadow: 0 0 18px rgba(255, 107, 156, 0.7);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
 
     nav ul {
@@ -127,6 +134,30 @@
 
     nav a.active::after {
       width: 100%;
+    }
+
+    /* THEME TOGGLE BUTTON */
+    .theme-toggle {
+      border-radius: 999px;
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background var(--transition-fast), transform var(--transition-fast),
+        border-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+      border-color: var(--accent);
+      color: var(--text);
     }
 
     /* MAIN LAYOUT */
@@ -686,6 +717,82 @@
       transform: translateY(0);
     }
 
+    /* LIGHT MODE OVERRIDES */
+    body.light-mode {
+      background: radial-gradient(circle at top left, #ffffff, #e5e7eb 55%, #d1d5db);
+      color: #111827;
+    }
+
+    body.light-mode header {
+      background: rgba(255, 255, 255, 0.9);
+      border-bottom-color: rgba(15, 23, 42, 0.08);
+    }
+
+    body.light-mode nav a {
+      color: #6b7280;
+    }
+
+    body.light-mode nav a:hover {
+      color: #111827;
+    }
+
+    body.light-mode .logo-badge {
+      background: radial-gradient(circle at 30% 30%, #fee2e2, #fb7185 70%);
+      box-shadow: 0 0 14px rgba(248, 113, 113, 0.7);
+    }
+
+    body.light-mode .hero-text,
+    body.light-mode .about-text,
+    body.light-mode .project-desc,
+    body.light-mode .resume-summary,
+    body.light-mode .contact-card p {
+      color: #4b5563;
+    }
+
+    body.light-mode .resume-card,
+    body.light-mode .contact-card,
+    body.light-mode .project-card,
+    body.light-mode .pill,
+    body.light-mode .contact-row {
+      background: #ffffff;
+      border-color: rgba(15, 23, 42, 0.08);
+    }
+
+    body.light-mode .chip {
+      background: #f9fafb;
+      border-color: rgba(15, 23, 42, 0.1);
+    }
+
+    body.light-mode .project-thumb {
+      background: radial-gradient(circle at top left, #e5e7eb, #d1d5db);
+    }
+
+    body.light-mode footer {
+      color: #6b7280;
+    }
+
+    body.light-mode .avatar-card {
+      background: radial-gradient(circle at top, #e5e7eb, #d1d5db);
+    }
+
+    body.light-mode .avatar-label {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(15, 23, 42, 0.14);
+    }
+
+    body.light-mode .btn-outline {
+      background: #ffffff;
+      color: #111827;
+      border-color: rgba(15, 23, 42, 0.12);
+    }
+
+    body.light-mode .theme-toggle {
+      background: #f9fafb;
+      border-color: rgba(15, 23, 42, 0.12);
+      color: #f59e0b;
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+    }
+
     /* RESPONSIVE */
     @media (max-width: 900px) {
       .hero {
@@ -734,15 +841,25 @@
         <div class="logo-badge">Y</div>
         <span>Your Name</span>
       </div>
-      <nav>
-        <ul>
-          <li><a href="#home" class="nav-link active">Home</a></li>
-          <li><a href="#about" class="nav-link">About</a></li>
-          <li><a href="#resume" class="nav-link">Resume</a></li>
-          <li><a href="#projects" class="nav-link">Projects</a></li>
-          <li><a href="#contact" class="nav-link">Contact</a></li>
-        </ul>
-      </nav>
+      <div class="nav-right">
+        <nav>
+          <ul>
+            <li><a href="#home" class="nav-link active">Home</a></li>
+            <li><a href="#about" class="nav-link">About</a></li>
+            <li><a href="#resume" class="nav-link">Resume</a></li>
+            <li><a href="#projects" class="nav-link">Projects</a></li>
+            <li><a href="#contact" class="nav-link">Contact</a></li>
+          </ul>
+        </nav>
+        <button
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button"
+          aria-label="Toggle light/dark mode"
+        >
+          <span id="theme-icon">☾</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -1077,6 +1194,42 @@
 
     window.addEventListener("scroll", setActiveLink);
     window.addEventListener("load", setActiveLink);
+
+    // THEME TOGGLE LOGIC
+    const themeToggleBtn = document.getElementById("theme-toggle");
+    const themeIcon = document.getElementById("theme-icon");
+
+    function applyTheme(mode) {
+      if (mode === "light") {
+        document.body.classList.add("light-mode");
+        themeIcon.textContent = "☀";
+      } else {
+        document.body.classList.remove("light-mode");
+        themeIcon.textContent = "☾";
+      }
+    }
+
+    (function initTheme() {
+      const stored = localStorage.getItem("theme");
+      let mode = stored;
+      if (!mode) {
+        const prefersLight =
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: light)").matches;
+        mode = prefersLight ? "light" : "dark";
+      }
+      applyTheme(mode);
+      localStorage.setItem("theme", mode);
+    })();
+
+    themeToggleBtn.addEventListener("click", () => {
+      const current = document.body.classList.contains("light-mode")
+        ? "light"
+        : "dark";
+      const next = current === "light" ? "dark" : "light";
+      applyTheme(next);
+      localStorage.setItem("theme", next);
+    });
   </script>
 </body>
 </html>
