@@ -719,8 +719,17 @@
 
     /* LIGHT MODE OVERRIDES */
     body.light-mode {
+      /* override theme variables for light mode */
+      --bg: #f9fafb;
+      --bg-alt: #e5e7eb;
+      --text: #111827;                  /* Dark text */
+      --muted: #4b5563;                 /* Readable grey */
+      --card-bg: #ffffff;
+      --border: rgba(15, 23, 42, 0.08);
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.18);
+
       background: radial-gradient(circle at top left, #ffffff, #e5e7eb 55%, #d1d5db);
-      color: #111827;
+      color: var(--text);
     }
 
     body.light-mode header {
@@ -741,14 +750,6 @@
       box-shadow: 0 0 14px rgba(248, 113, 113, 0.7);
     }
 
-    body.light-mode .hero-text,
-    body.light-mode .about-text,
-    body.light-mode .project-desc,
-    body.light-mode .resume-summary,
-    body.light-mode .contact-card p {
-      color: #4b5563;
-    }
-
     body.light-mode .resume-card,
     body.light-mode .contact-card,
     body.light-mode .project-card,
@@ -761,6 +762,7 @@
     body.light-mode .chip {
       background: #f9fafb;
       border-color: rgba(15, 23, 42, 0.1);
+      color: var(--muted);
     }
 
     body.light-mode .project-thumb {
@@ -778,6 +780,7 @@
     body.light-mode .avatar-label {
       background: rgba(255, 255, 255, 0.9);
       border-color: rgba(15, 23, 42, 0.14);
+      color: var(--muted);
     }
 
     body.light-mode .btn-outline {
